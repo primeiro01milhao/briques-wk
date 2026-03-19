@@ -100,7 +100,7 @@ button{
 }
 
 .actions{
-  margin-top:80px; /* 👈 desce os botões */
+  margin-top:80px;
 }
 
 .remove{
@@ -140,6 +140,8 @@ button{
 
 <div class="actions">
 <button onclick="addLinha()">Adicionar Produto</button>
+<button onclick="exportar()">Exportar</button>
+<input type="file" onchange="importar(event)">
 </div>
 
 </div>
@@ -191,7 +193,7 @@ function calcular(){
   let investimento=0;
   let deslocamento=0;
 
-  const custoKmFixo = 1.00; // 👈 agora é 1 real por KM
+  const custoKmFixo = 1.00;
 
   rows.forEach(row=>{
     let c=row.querySelectorAll("input");
@@ -227,6 +229,26 @@ function calcular(){
   document.getElementById("roi").innerText=roi.toFixed(2)+"%";
 
   document.getElementById("lucro").className = lucro>=0?"positive":"negative";
+}
+
+function exportar(){
+  const blob=new Blob([JSON.stringify(dados)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="brique_backup.json";
+  a.click();
+}
+
+function importar(event){
+  const file=event.target.files[0];
+  const reader=new FileReader();
+
+  reader.onload=e=>{
+    localStorage.setItem("futuristaData",e.target.result);
+    location.reload();
+  }
+
+  reader.readAsText(file);
 }
 
 </script>
